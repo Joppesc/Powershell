@@ -9,7 +9,7 @@ $ReplyUri = 'https://engine.govconext.nl/authentication/sp/consume-assertion' # 
 $LoginUri = 'https://engine.govconext.nl/authentication/sp/debug' # Login URL for the application
 $Graphroles = "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ApplicationConfiguration", "Group.Create" # Graph roles needed to assign to the authenticated service principal
 
-# Connect to Microsoft Graph using certificate-based authentication
+# Connect to Microsoft Graph
 Connect-MgGraph -scopes $Graphroles -TenantId $TenantID
 
 # Template ID for non-gallery applications
@@ -150,8 +150,8 @@ $claimMappingPolicyParams = @{
             {
                 "samlClaimType": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
                 "source": "transformation",
-                "id": "outputClaim-schachome-extract",
-                "transformationId": "schachome-extract"
+                "id": "schachome-extract-output",
+                "transformationId": "schachome-extract-input"
             },
             {
                 "samlClaimType": "urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
@@ -163,7 +163,7 @@ $claimMappingPolicyParams = @{
         "claimsTransformations": [
             {
                 "transformationMethod": "RegexReplace",
-                "id": "schachome-extract",
+                "id": "schachome-extract-input",
                 "inputParameters": [
                     {
                         "id": "regex",
@@ -190,15 +190,34 @@ $claimMappingPolicyParams = @{
                 ],
                 "outputClaims": [
                     {
-                        "claimTypeReferenceId": "outputClaim-schachome-extract",
-                        "transformationClaimType": "outputClaim"
+                        "transformationClaimType": "outputClaim",
+                        "nextTransform": "schachome-lowercase-transform"
+                    }
+                ]
+            },
+            {
+                "transformationMethod": "ToLowercase",
+                "id": "schachome-lowercase-transform",
+                "inputParameters": [],
+                "parameters": [
+                    {
+                        "name": "sourceClaim",
+                        "required": true
+                    }
+                ],
+                "inputClaims": [],
+                "outputClaims": [
+                    {
+                        "claimTypeReferenceId": "schachome-extract-output",
+                        "transformationClaimType": "outputClaim",
+                        "nextTransform": null
                     }
                 ]
             },
             {
                 "transformationMethod": "RegexReplace",
                 "id": "edupersonscopedaffiliation-regexreplace",
-               "inputParameters": [
+                "inputParameters": [
                     {
                         "id": "regex",
                         "value": "^.*\\@(?'domain')"
@@ -228,7 +247,7 @@ $claimMappingPolicyParams = @{
                         "transformationClaimType": "outputClaim"
                     }
                 ]
-            }
+            },
         ]
     }
 }
