@@ -4,9 +4,9 @@ $SPNName = "fill in" # Display name for the Service Principal
 $group = 'fill in' # Name of the group to be assigned to the Service Principal
 $groupdiscription = "fill in" # Description of the group
 $notificationmail = "fill in" # Email for certificate expiry notifications
-$IdentifierUri = 'https://engine.govconext.nl/authentication/sp/metadata' # Identifier URI for the application
-$ReplyUri = 'https://engine.govconext.nl/authentication/sp/consume-assertion' # Reply URL for the application
-$LoginUri = 'https://engine.govconext.nl/authentication/sp/debug' # Login URL for the application
+$IdentifierUri = 'fill in' # Identifier URI for the application
+$ReplyUri = 'fill in' # Reply URL for the application
+$LoginUri = 'fill in' # Login URL for the application
 $Graphroles = "Application.ReadWrite.All", "Policy.Read.All", "Policy.ReadWrite.ApplicationConfiguration", "Group.Create" # Graph roles needed to assign to the authenticated service principal
 
 # Connect to Microsoft Graph
