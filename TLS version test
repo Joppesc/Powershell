@@ -1,0 +1,23 @@
+# Define registry paths for TLS 1.1 and TLS 1.2
+$protocols = @("TLS 1.1", "TLS 1.2")
+$basePath = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols"
+
+foreach ($protocol in $protocols) {
+    $clientPath = Join-Path -Path $basePath -ChildPath "$protocol\Client"
+    $serverPath = Join-Path -Path $basePath -ChildPath "$protocol\Server"
+    Write-Host "Checking $protocol settings..."
+
+    foreach ($path in @($clientPath, $serverPath)) {
+        if (Test-Path $path) {
+            $enabled = Get-ItemProperty -Path $path -Name "Enabled" -ErrorAction SilentlyContinue
+            $disabledByDefault = Get-ItemProperty -Path $path -Name "DisabledByDefault" -ErrorAction SilentlyContinue
+            $lastPart = $path.Split('\')[-1]
+
+            write-host $lastPart $protocol
+            Write-Host "  Enabled: $($enabled.Enabled)"
+            Write-Host "  DisabledByDefault: $($disabledByDefault.DisabledByDefault)"
+        } else {
+            Write-Host "$path does not exist."
+        }
+    }
+}
