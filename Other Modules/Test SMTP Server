@@ -1,0 +1,21 @@
+# Define email parameters
+$SmtpServer = "***"
+$SmtpPort = 587
+$Username = "***"
+$Password = "***"
+$From = "***"
+$To = "***"
+$Subject = "Test Email"
+$Body = "This is a test email sent using PowerShell."
+
+# Create a credential object
+$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential ($Username, $SecurePassword)
+
+# Send the email
+Send-MailMessage -From $From -To $To -Subject $Subject -Body $Body -SmtpServer $SmtpServer -Port $SmtpPort -Credential $Credential -UseSsl 
+Write-Output "Email sent successfully to $To"
+
+Test-NetConnection -ComputerName $SmtpServer -Port 587
+
+tnc $SmtpServer -port 587
